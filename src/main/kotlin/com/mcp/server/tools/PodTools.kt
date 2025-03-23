@@ -1,17 +1,25 @@
 package com.mcp.server.tools
 
 import io.kubernetes.client.openapi.apis.CoreV1Api
+import io.kubernetes.client.openapi.apis.AppsV1Api
+import io.kubernetes.client.openapi.models.V1Pod
+import io.kubernetes.client.openapi.models.V1ContainerStatus
+import io.kubernetes.client.openapi.models.V1Container
+import io.kubernetes.client.openapi.models.V1PodList
 import io.kubernetes.client.util.Config
 import io.kubernetes.client.util.Streams
 import org.springframework.ai.tool.annotation.Tool
 import org.springframework.ai.tool.annotation.ToolParam
 import org.springframework.stereotype.Service
 import java.io.ByteArrayOutputStream
+import java.time.OffsetDateTime
+import java.time.temporal.ChronoUnit
 
 
 @Service
 class PodTools(
-    private val coreV1Api: CoreV1Api
+    private val coreV1Api: CoreV1Api,
+    private val appsV1Api: AppsV1Api
 ) {
     @Tool(name = "listPods", description = "Lists all Kubernetes pods in the specified namespace")
     fun listPods(@ToolParam(description = "The Kubernetes namespace to list pods from") namespace: String = "default"): List<String> {
@@ -28,14 +36,14 @@ class PodTools(
         }
     }
 
-    @Tool(name = "getPodLogs", description = "Retrieves logs from a specific Kubernetes pod")
+    @Tool(name = "getPodLogs", description = "Retrieves logs from a specific Kubernetes pod with error pattern detection")
     fun getPodLogs(
         @ToolParam(description = "Name of the pod to get logs from") podName: String,
         @ToolParam(description = "The Kubernetes namespace where the pod is located") namespace: String = "default",
         @ToolParam(description = "Number of lines to retrieve from the end of the logs") tailLines: Int = 100
     ): String {
         return try {
-            coreV1Api.readNamespacedPodLog(
+            val logs = coreV1Api.readNamespacedPodLog(
                 podName,
                 namespace,
                 null,
@@ -48,6 +56,32 @@ class PodTools(
                 tailLines,
                 null
             )
+            
+            // Analyze logs for common error patterns
+            val errorPatterns = mapOf(
+                "OutOfMemoryError" to "Memory issues detected",
+                "Exception" to "Application exceptions found",
+                "Error" to "General errors detected",
+                "Failed to pull image" to "Image pull issues",
+                "Connection refused" to "Network connectivity issues",
+                "Permission denied" to "Permission/RBAC issues"
+            )
+            
+            val analysis = errorPatterns.filter { (pattern, _) ->
+                logs.contains(pattern, ignoreCase = true)
+            }.map { (_, description) -> description }.distinct()
+            
+            if (analysis.isEmpty()) {
+                logs
+            } else {
+                """
+                Log Analysis:
+                ${analysis.joinToString("\n") { "- $it" }}
+                
+                Logs:
+                $logs
+                """.trimIndent()
+            }
         } catch (e: Exception) {
             "Error retrieving logs: ${e.message}"
         }
@@ -83,130 +117,175 @@ class PodTools(
     ): String {
         return try {
             val pods = coreV1Api.listNamespacedPod(namespace, null, null, null, null, null, null, null, null, null, null)
-                .items
-                .filter { pod ->
-                    val containerStatuses = pod.status?.containerStatuses ?: emptyList()
-                    val isProblematic = containerStatuses.any { status ->
-                        status.state?.waiting?.reason in listOf(
-                            "CrashLoopBackOff",
-                            "ImagePullBackOff",
-                            "ErrImagePull",
-                            "CreateContainerError",
-                            "OOMKilled"
-                        ) || 
-                        (status.restartCount > 0 && status.lastState?.terminated?.reason in listOf(
-                            "OOMKilled",
-                            "Error",
-                            "ContainerCannotRun"
-                        ))
-                    }
-                    isProblematic
-                }
-
-            if (pods.isEmpty()) {
-                return "No problematic pods found in namespace '$namespace'"
-            }
-
-            val results = pods.map { pod ->
-                val analysis = StringBuilder()
-                analysis.append("\n=== Pod: ${pod.metadata?.name} ===\n")
-                analysis.append("Status: ${pod.status?.phase}\n")
-
-                pod.status?.containerStatuses?.forEach { status ->
-                    analysis.append("\nContainer: ${status.name}\n")
-                    analysis.append("Restart Count: ${status.restartCount}\n")
-
-                    val state = status.state
-                    val lastState = status.lastState
-                    val currentIssue = when {
-                        state?.waiting?.reason == "CrashLoopBackOff" -> {
-                            val logs = try {
-                                coreV1Api.readNamespacedPodLog(
-                                    pod.metadata?.name!!, 
-                                    namespace,
-                                    status.name,
-                                    null,
-                                    false,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    100,
-                                    null
-                                )
-                            } catch (e: Exception) { "Unable to fetch logs: ${e.message}" }
-
-                            "CrashLoopBackOff - Container is repeatedly crashing\n" +
-                            "Recent Logs:\n$logs\n" +
-                            "Recommendations:\n" +
-                            "1. Check application logs for error messages\n" +
-                            "2. Verify the container's resource limits and requests\n" +
-                            "3. Ensure the application can handle its configuration\n" +
-                            "4. Check for proper initialization and readiness probes"
-                        }
-                        state?.waiting?.reason?.contains("ImagePull") == true -> {
-                            val image = pod.spec?.containers?.find { it.name == status.name }?.image
-                            "Image Pull Error - Unable to pull image: $image\n" +
-                            "Reason: ${state.waiting?.message}\n" +
-                            "Recommendations:\n" +
-                            "1. Verify the image name and tag are correct\n" +
-                            "2. Ensure the image exists in the specified registry\n" +
-                            "3. Check if the registry requires authentication\n" +
-                            "4. Verify network connectivity to the registry"
-                        }
-                        lastState?.terminated?.reason == "OOMKilled" -> {
-                            val container = pod.spec?.containers?.find { it.name == status.name }
-                            "Out of Memory Error\n" +
-                            "Memory Limits: ${container?.resources?.limits?.get("memory")}\n" +
-                            "Memory Requests: ${container?.resources?.requests?.get("memory")}\n" +
-                            "Recommendations:\n" +
-                            "1. Increase the memory limit in the pod spec\n" +
-                            "2. Analyze application memory usage patterns\n" +
-                            "3. Check for memory leaks in the application\n" +
-                            "4. Consider implementing memory optimization strategies"
-                        }
-                        state?.waiting?.reason == "CreateContainerError" -> {
-                            "Container Creation Error\n" +
-                            "Error: ${state.waiting?.message}\n" +
-                            "Recommendations:\n" +
-                            "1. Verify container configuration in the pod spec\n" +
-                            "2. Check for missing or invalid volume mounts\n" +
-                            "3. Ensure all required environment variables are set\n" +
-                            "4. Validate container security context settings"
-                        }
-                        else -> "Unknown issue - Check events and logs for more details"
-                    }
-                    analysis.append(currentIssue)
-                }
-
-                // Add events for more context
-                val events = coreV1Api.listNamespacedEvent(
-                    namespace,
-                    null,
-                    null,
-                    null,
-                    "involvedObject.name=${pod.metadata?.name}",
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                ).items
-
-                if (events.isNotEmpty()) {
-                    analysis.append("\n\nRecent Events:\n")
-                    events.takeLast(5).forEach { event ->
-                        analysis.append("${event.type}: ${event.reason} - ${event.message}\n")
-                    }
-                }
-
-                analysis.toString()
-            }
-
-            "Found ${pods.size} problematic pod(s) in namespace '$namespace':\n" + results.joinToString("\n\n")
+            analyzePodList(pods, namespace)
         } catch (e: Exception) {
             "Error analyzing pods: ${e.message}"
+        }
+    }
+
+    private fun analyzePodList(pods: V1PodList, namespace: String): String {
+        val problematicPods = mutableListOf<String>()
+        val recommendations = mutableListOf<String>()
+
+        pods.items.forEach { pod: V1Pod ->
+            analyzePod(pod, problematicPods, recommendations)
+        }
+
+        return formatAnalysisResults(namespace, problematicPods, recommendations)
+    }
+
+    private fun analyzePod(
+        pod: V1Pod,
+        problematicPods: MutableList<String>,
+        recommendations: MutableList<String>
+    ) {
+        val podName = pod.metadata?.name ?: "unknown"
+        val containerStatuses = pod.status?.containerStatuses ?: emptyList()
+
+        when (pod.status?.phase) {
+            "Pending" -> handlePendingPod(pod, podName, problematicPods, recommendations)
+            "Failed" -> handleFailedPod(podName, problematicPods, recommendations)
+            null -> handleUnknownPod(podName, problematicPods, recommendations)
+            else -> {
+                analyzeContainerStatuses(pod, podName, containerStatuses, problematicPods, recommendations)
+                checkResourceConstraints(pod, podName, recommendations)
+            }
+        }
+    }
+
+    private fun handlePendingPod(
+        pod: V1Pod,
+        podName: String,
+        problematicPods: MutableList<String>,
+        recommendations: MutableList<String>
+    ) {
+        problematicPods.add("$podName (Pending)")
+        if (pod.status?.conditions?.any { it.type == "PodScheduled" && it.status == "False" } == true) {
+            recommendations.add("Pod $podName: Scheduling issues detected. Check node resources and pod affinity/anti-affinity rules.")
+        } else {
+            recommendations.add("Pod $podName: Pod is pending. Check events for more details.")
+        }
+    }
+
+    private fun handleFailedPod(
+        podName: String,
+        problematicPods: MutableList<String>,
+        recommendations: MutableList<String>
+    ) {
+        problematicPods.add("$podName (Failed)")
+        recommendations.add("Pod $podName: Pod failed. Check logs using 'getPodLogs' for more details.")
+    }
+
+    private fun handleUnknownPod(
+        podName: String,
+        problematicPods: MutableList<String>,
+        recommendations: MutableList<String>
+    ) {
+        problematicPods.add("$podName (Unknown Phase)")
+        recommendations.add("Pod $podName: Pod phase is unknown. This might indicate a cluster issue.")
+    }
+
+    private fun analyzeContainerStatuses(
+        pod: V1Pod,
+        podName: String,
+        containerStatuses: List<V1ContainerStatus>,
+        problematicPods: MutableList<String>,
+        recommendations: MutableList<String>
+    ) {
+        containerStatuses.forEach { status: V1ContainerStatus ->
+            val containerName = status.name
+            checkRestartCount(status, podName, containerName, problematicPods, recommendations)
+            checkContainerState(status, podName, containerName, problematicPods, recommendations)
+            checkOOMKills(status, podName, containerName, problematicPods, recommendations)
+        }
+    }
+
+    private fun checkRestartCount(
+        status: V1ContainerStatus,
+        podName: String,
+        containerName: String,
+        problematicPods: MutableList<String>,
+        recommendations: MutableList<String>
+    ) {
+        if (status.restartCount > 3) {
+            problematicPods.add("$podName (CrashLooping - Container: $containerName)")
+            recommendations.add("Pod $podName, Container $containerName: High restart count (${status.restartCount}). Check logs and memory/CPU limits.")
+        }
+    }
+
+    private fun checkContainerState(
+        status: V1ContainerStatus,
+        podName: String,
+        containerName: String,
+        problematicPods: MutableList<String>,
+        recommendations: MutableList<String>
+    ) {
+        status.state?.waiting?.let { waiting ->
+            when (waiting.reason) {
+                "CrashLoopBackOff" -> {
+                    problematicPods.add("$podName (CrashLoopBackOff - Container: $containerName)")
+                    recommendations.add("Pod $podName, Container $containerName: Application repeatedly crashing. Check logs and application health.")
+                }
+                "ImagePullBackOff", "ErrImagePull" -> {
+                    problematicPods.add("$podName (Image Pull Issue - Container: $containerName)")
+                    recommendations.add("Pod $podName, Container $containerName: Image pull failed. Check image name, registry credentials, and network connectivity.")
+                }
+                "CreateContainerError" -> {
+                    problematicPods.add("$podName (Container Creation Failed - Container: $containerName)")
+                    recommendations.add("Pod $podName, Container $containerName: Container creation failed. Check container configuration and volume mounts.")
+                }
+                null -> { /* Ignore null reasons */ }
+                else -> {
+                    problematicPods.add("$podName (${waiting.reason} - Container: $containerName)")
+                    recommendations.add("Pod $podName, Container $containerName: Container in waiting state: ${waiting.reason}. Message: ${waiting.message ?: "Unknown"}")
+                }
+            }
+        }
+    }
+
+    private fun checkOOMKills(
+        status: V1ContainerStatus,
+        podName: String,
+        containerName: String,
+        problematicPods: MutableList<String>,
+        recommendations: MutableList<String>
+    ) {
+        status.lastState?.terminated?.let { terminated ->
+            if (terminated.reason == "OOMKilled") {
+                problematicPods.add("$podName (OOM Killed - Container: $containerName)")
+                recommendations.add("Pod $podName, Container $containerName: Out of memory. Consider increasing memory limits or investigating memory leaks.")
+            }
+        }
+    }
+
+    private fun checkResourceConstraints(
+        pod: V1Pod,
+        podName: String,
+        recommendations: MutableList<String>
+    ) {
+        pod.spec?.containers?.forEach { container: V1Container ->
+            val resources = container.resources
+            if (resources?.limits == null && resources?.requests == null) {
+                recommendations.add("Pod $podName, Container ${container.name}: No resource limits/requests set. Consider adding them for better resource management.")
+            }
+        }
+    }
+
+    private fun formatAnalysisResults(
+        namespace: String,
+        problematicPods: List<String>,
+        recommendations: List<String>
+    ): String {
+        return if (problematicPods.isEmpty()) {
+            "No problematic pods found in namespace $namespace"
+        } else {
+            """
+            Problematic Pods in namespace $namespace:
+            ${problematicPods.joinToString("\n") { "- $it" }}
+            
+            Recommendations:
+            ${recommendations.joinToString("\n") { "- $it" }}
+            """.trimIndent()
         }
     }
 
