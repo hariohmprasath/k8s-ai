@@ -50,10 +50,12 @@ Welcome to the next generation of Kubernetes management! This Spring Boot-based 
 | ⎈ Kubernetes | Configured `~/.kube/config` |
 | 🎡 Helm | CLI installed |
 
+> **Note:** MCP tool always uses the kubeconfig file from `~/.kube/config`, so make sure it is properly configured.
+
 ## 🏗️ Building the Project
 
 ```bash
-./gradlew build
+./gradlew clean build
 ```
 
 ## 🤝 Integration with Claude Desktop
@@ -89,27 +91,29 @@ This AI-powered MCP server understands natural language queries about your Kuber
 
 ### 🏥 Cluster Health and Diagnostics
 ```markdown
-📊 "What's the overall health of my cluster?"
-🔍 "Are there any resource bottlenecks in the 'production' namespace?"
-🚨 "Show me problematic pods in the 'dev' namespace with recommendations"
-📅 "What events happened in the cluster in the last hour?"
+📊 What's the overall health of my cluster?
+🔍 Are there any resource bottlenecks in the 'production' namespace?
+🚨 Show me problematic pods in the 'dev' namespace with recommendations
+📅 What events happened in the cluster in the last hour?
 ```
 
 ### 📱 Application Management
 ```markdown
-📋 "List all pods in the 'backend' namespace and their status"
-❓ "Why is the 'auth-service' pod failing to start?"
-📝 "Show me the logs from the 'payment-processor' pod with error highlighting"
-📈 "What's using the most resources in the 'monitoring' namespace?"
+📋 List all pods in the 'backend' namespace and their status
+❓ Why is the 'auth-service' pod failing to start?
+📝 Show me the logs from the 'payment-processor' pod with error highlighting
+📈 What's using the most resources in the 'monitoring' namespace?
 ```
 
 ### ⎈ Helm Release Management
 ```markdown
-📦 "What Helm releases are installed in the 'staging' namespace?"
-⚡ "Install the 'prometheus' chart from the official repository"
-⚙️ "What values are configured for the 'elasticsearch' release?"
-🔄 "Update the 'kafka' release to version 2.0.0"
+📦 What Helm releases are installed in the 'staging' namespace?
+⚡ Install the 'prometheus' chart from the official repository
+⚙️ What values are configured for the 'elasticsearch' release?
+🔄 Update the 'kafka' release to version 2.0.0
 ```
+
+> **Note:** I have noticed sometimes LLM will try and generate kubectl commands on the fly, since we would like to stick with the existing MCP tools you can suffix the prompt with "use existing MCP tools, dont generate kubectl commands"
 
 ## 🌟 Unique Features
 
