@@ -29,10 +29,12 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew clean build
     
-    - name: Set up environment
+    - name: Calculate Version
+      id: version
       run: |
-        echo "RELEASE_VERSION=$(./gradlew properties -q | grep "version:" | cut -d' ' -f2)" >> $GITHUB_ENV
-        echo "REPOSITORY=${GITHUB_REPOSITORY}" >> $GITHUB_ENV
+        VERSION=$(./gradlew properties --console=plain -q | grep "^version:" | awk '{printf $2}')
+        echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+        echo "Detected version: $VERSION"
     
     - name: Update build.gradle.kts
       run: |
@@ -41,14 +43,15 @@ jobs:
     - name: Publish to GitHub Packages
       run: ./gradlew publish
       env:
+        VERSION: ${{ steps.version.outputs.VERSION }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Create Release
       id: create_release
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: v${{ env.RELEASE_VERSION }}
-        name: Release v${{ env.RELEASE_VERSION }}
+        tag_name: v${{ steps.version.outputs.VERSION }}
+        name: Release v${{ steps.version.outputs.VERSION }}
         draft: false
         prerelease: false
         files: |
