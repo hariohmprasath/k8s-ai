@@ -39,4 +39,4 @@ out/
 
 ### Kotlin ###
 .kotlin
-mcp-weather-stdio-server.log
+mcp-k8s-stdio-server.log

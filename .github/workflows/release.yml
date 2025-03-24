@@ -65,7 +65,7 @@ jobs:
           
           ### Installation
           1. Download the JAR file
-          2. Configure your Claude Desktop settings as shown in the README
-          3. Run with: `java -Dspring.ai.mcp.server.stdio=true -Dspring.main.web-application-type=none -Dlogging.pattern.console= -jar k8s-*.jar`
+          2. Configure your Claude Desktop settings as shown in the README 
+          3. Make sure to pick the fat jar with all the dependencies.
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

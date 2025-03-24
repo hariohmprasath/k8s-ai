@@ -21,7 +21,7 @@
 
 ## ✨ Overview
 
-Welcome to the next generation of Kubernetes management! This Spring Boot-based MCP server combines the power of AI with cluster management capabilities.
+This is a Spring Boot-based MCP server that combines the power of AI with cluster management capabilities.
 
 ## 🎁 Features
 
@@ -66,19 +66,21 @@ Welcome to the next generation of Kubernetes management! This Spring Boot-based 
 ```json
    {
     "mcpServers": {
-      "spring-ai-mcp-weather": {
+      "spring-ai-mcp-k8s": {
         "command": "java",
         "args": [
           "-Dspring.ai.mcp.server.stdio=true",
           "-Dspring.main.web-application-type=none",
           "-Dlogging.pattern.console=",
           "-jar",          
-          "<<location>>/k8s-0.0.1-SNAPSHOT.jar"
+          "<<jar-location>>"
         ]
       }
     }
   }
 ```
+
+> **Note:** Make sure to pick the fat jar with all the dependencies
 
 ## Integration with Other MCP Hosts
 
@@ -100,7 +102,7 @@ This AI-powered MCP server understands natural language queries about your Kuber
 
 ### 📱 Application Management
 ```markdown
-📋 List all pods in the 'backend' namespace and their status
+📋 List all pods in the 'default' namespace and their status
 ❓ Why is the 'auth-service' pod failing to start?
 📝 Show me the logs from the 'payment-processor' pod with error highlighting
 📈 What's using the most resources in the 'monitoring' namespace?
