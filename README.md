@@ -2,9 +2,9 @@
 
 # 🎯 Kubernetes MCP Server
 
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen.svg)](https://spring.io/projects/spring-boot)
-[![Kubernetes](https://img.shields.io/badge/Kubernetes-1.x-326CE5.svg)](https://kubernetes.io/)
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.x-7541E8.svg)](https://kotlinlang.org/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.6-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-18.0.1-326CE5.svg)](https://kubernetes.io/)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.9.25-7541E8.svg)](https://kotlinlang.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 > Your AI-Powered Kubernetes Control Plane
