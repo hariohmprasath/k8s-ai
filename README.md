@@ -4,6 +4,7 @@
 
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-1.x-326CE5.svg)](https://kubernetes.io/)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.x-7541E8.svg)](https://kotlinlang.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 > Your AI-Powered Kubernetes Control Plane
