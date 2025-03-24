@@ -60,7 +60,8 @@ class K8sConfig {
         networkTools: NetworkTools,
         resourceManagementTools: ResourceManagementTools,
         eventTools: EventTools,
-        healthTools: HealthTools
+        healthTools: HealthTools,
+        helmTools: HelmTools
     ): ToolCallbackProvider {
         return MethodToolCallbackProvider.builder()
             .toolObjects(
@@ -74,7 +75,8 @@ class K8sConfig {
                 networkTools,
                 resourceManagementTools,
                 eventTools,
-                healthTools
+                healthTools,
+                helmTools
             )
             .build()
     }

@@ -147,7 +147,7 @@ class PodTools(
             "Failed" -> handleFailedPod(podName, problematicPods, recommendations)
             null -> handleUnknownPod(podName, problematicPods, recommendations)
             else -> {
-                analyzeContainerStatuses(pod, podName, containerStatuses, problematicPods, recommendations)
+                analyzeContainerStatuses(podName, containerStatuses, problematicPods, recommendations)
                 checkResourceConstraints(pod, podName, recommendations)
             }
         }
@@ -186,7 +186,6 @@ class PodTools(
     }
 
     private fun analyzeContainerStatuses(
-        pod: V1Pod,
         podName: String,
         containerStatuses: List<V1ContainerStatus>,
         problematicPods: MutableList<String>,
