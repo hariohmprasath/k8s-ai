@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      packages: write
     
     steps:
     - uses: actions/checkout@v4
@@ -27,17 +28,27 @@ jobs:
     
     - name: Build with Gradle
       run: ./gradlew clean build
-      
-    - name: Get version
-      id: get_version
-      run: echo "version=$(./gradlew properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_OUTPUT
-      
+    
+    - name: Set up environment
+      run: |
+        echo "RELEASE_VERSION=$(./gradlew properties -q | grep "version:" | cut -d' ' -f2)" >> $GITHUB_ENV
+        echo "REPOSITORY=${GITHUB_REPOSITORY}" >> $GITHUB_ENV
+    
+    - name: Update build.gradle.kts
+      run: |
+        sed -i "s|OWNER/REPOSITORY|$GITHUB_REPOSITORY|g" build.gradle.kts
+    
+    - name: Publish to GitHub Packages
+      run: ./gradlew publish
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
     - name: Create Release
       id: create_release
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: v${{ steps.get_version.outputs.version }}-${{ github.sha }}
-        name: Release v${{ steps.get_version.outputs.version }}-${{ github.sha }}
+        tag_name: v${{ env.RELEASE_VERSION }}
+        name: Release v${{ env.RELEASE_VERSION }}
         draft: false
         prerelease: false
         files: |

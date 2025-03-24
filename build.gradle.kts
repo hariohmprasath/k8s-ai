@@ -3,6 +3,7 @@ plugins {
 	kotlin("plugin.spring") version "1.9.25"
 	id("org.springframework.boot") version "3.3.6"
 	id("io.spring.dependency-management") version "1.1.7"
+	`maven-publish`
 }
 
 group = "com.mcp.server"
@@ -45,4 +46,22 @@ kotlin {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+publishing {
+	repositories {
+		maven {
+			name = "GitHubPackages"
+			url = uri("https://maven.pkg.github.com/OWNER/REPOSITORY")
+			credentials {
+				username = System.getenv("GITHUB_ACTOR")
+				password = System.getenv("GITHUB_TOKEN")
+			}
+		}
+	}
+	publications {
+		create<MavenPublication>("gpr") {
+			from(components["java"])
+		}
+	}
 }
