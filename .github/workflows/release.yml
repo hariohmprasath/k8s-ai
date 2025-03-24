@@ -1,0 +1,57 @@
+name: Release Build
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+    
+    - name: Build with Gradle
+      run: ./gradlew clean build
+      
+    - name: Get version
+      id: get_version
+      run: echo "version=$(./gradlew properties -q | grep "version:" | awk '{print $2}')" >> $GITHUB_OUTPUT
+      
+    - name: Create Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v${{ steps.get_version.outputs.version }}-${{ github.sha }}
+        name: Release v${{ steps.get_version.outputs.version }}-${{ github.sha }}
+        draft: false
+        prerelease: false
+        files: |
+          build/libs/*.jar
+        body: |
+          Automated release for commit ${{ github.sha }}
+          
+          ### What's Changed
+          - Automated build from the latest commit
+          - Full commit message: ${{ github.event.head_commit.message }}
+          
+          ### Installation
+          1. Download the JAR file
+          2. Configure your Claude Desktop settings as shown in the README
+          3. Run with: `java -Dspring.ai.mcp.server.stdio=true -Dspring.main.web-application-type=none -Dlogging.pattern.console= -jar k8s-*.jar`
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
