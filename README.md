@@ -142,9 +142,6 @@ This AI-powered MCP server understands natural language queries about your Kuber
 | 🗣️ **Natural Language Interface** | No need to memorize kubectl commands |
 | 💡 **Contextual Help** | Provides relevant suggestions based on cluster state |
 | 🔍 **Rich Error Information** | Detailed error messages with troubleshooting steps |
-analyzeResourceBottlenecks <namespace>
-getRecentEvents <namespace>
-```
 
 ## 📄 License
 
