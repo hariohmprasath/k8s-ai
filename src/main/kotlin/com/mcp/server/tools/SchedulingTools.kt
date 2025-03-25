@@ -11,7 +11,7 @@ class SchedulingTools(
     private val coreV1Api: CoreV1Api,
     private val schedulingV1Api: SchedulingV1Api
 ) {
-    @Tool(name = "listPriorityClasses", description = "Lists all priority classes in the cluster")
+    @Tool(name = "list_priority_classes", description = "Lists all priority classes in the cluster")
     fun listPriorityClasses(): List<String> {
         return try {
             schedulingV1Api.listPriorityClass(null, null, null, null, null, null, null, null, null, null)
@@ -27,7 +27,7 @@ class SchedulingTools(
         }
     }
 
-    @Tool(name = "describePriorityClass", description = "Get detailed information about a specific priority class")
+    @Tool(name = "describe_priority_class", description = "Get detailed information about a specific priority class")
     fun describePriorityClass(
         @ToolParam(description = "Name of the priority class to describe") 
         priorityClassName: String
@@ -49,7 +49,7 @@ class SchedulingTools(
         }
     }
 
-    @Tool(name = "listNodeTaints", description = "Lists all taints on the specified node")
+    @Tool(name = "list_node_taints", description = "Lists all taints on the specified node")
     fun listNodeTaints(
         @ToolParam(description = "Name of the node to get taints from") 
         nodeName: String
@@ -73,7 +73,7 @@ class SchedulingTools(
         }
     }
 
-    @Tool(name = "listPodTolerations", description = "Lists all tolerations on pods in a namespace")
+    @Tool(name = "list_pod_tolerations", description = "Lists all tolerations on pods in a namespace")
     fun listPodTolerations(
         @ToolParam(description = "The Kubernetes namespace to list pod tolerations from") 
         namespace: String = "default"
@@ -97,7 +97,7 @@ class SchedulingTools(
         }
     }
 
-    @Tool(name = "listPodNodeAffinity", description = "Lists node affinity rules for pods in a namespace")
+    @Tool(name = "list_pod_node_affinity", description = "Lists node affinity rules for pods in a namespace")
     fun listPodNodeAffinity(
         @ToolParam(description = "The Kubernetes namespace to list pod node affinity rules from") 
         namespace: String = "default"

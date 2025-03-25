@@ -11,7 +11,7 @@ class StorageTools(
     private val coreV1Api: CoreV1Api,
     private val storageV1Api: StorageV1Api
 ) {
-    @Tool(name = "listPersistentVolumes", description = "Lists all persistent volumes in the cluster")
+    @Tool(name = "list_persistent_volumes", description = "Lists all persistent volumes in the cluster")
     fun listPersistentVolumes(): List<String> {
         return try {
             coreV1Api.listPersistentVolume(null, null, null, null, null, null, null, null, null, null)
@@ -29,7 +29,7 @@ class StorageTools(
         }
     }
 
-    @Tool(name = "listPersistentVolumeClaims", description = "Lists all persistent volume claims in the specified namespace")
+    @Tool(name = "list_persistent_volume_claims", description = "Lists all persistent volume claims in the specified namespace")
     fun listPersistentVolumeClaims(
         @ToolParam(description = "The Kubernetes namespace to list PVCs from") 
         namespace: String = "default"
@@ -50,7 +50,7 @@ class StorageTools(
         }
     }
 
-    @Tool(name = "listStorageClasses", description = "Lists all storage classes in the cluster")
+    @Tool(name = "list_storage_classes", description = "Lists all storage classes in the cluster")
     fun listStorageClasses(): List<String> {
         return try {
             storageV1Api.listStorageClass(null, null, null, null, null, null, null, null, null, null)
@@ -68,7 +68,7 @@ class StorageTools(
         }
     }
 
-    @Tool(name = "describePersistentVolume", description = "Get detailed information about a specific persistent volume")
+    @Tool(name = "describe_persistent_volume", description = "Get detailed information about a specific persistent volume")
     fun describePersistentVolume(
         @ToolParam(description = "Name of the persistent volume to describe") 
         pvName: String
@@ -102,7 +102,7 @@ class StorageTools(
         }
     }
 
-    @Tool(name = "describePersistentVolumeClaim", description = "Get detailed information about a specific persistent volume claim")
+    @Tool(name = "describe_persistent_volume_claim", description = "Get detailed information about a specific persistent volume claim")
     fun describePersistentVolumeClaim(
         @ToolParam(description = "Name of the persistent volume claim to describe") 
         pvcName: String,

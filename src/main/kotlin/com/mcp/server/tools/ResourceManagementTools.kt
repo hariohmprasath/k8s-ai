@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service
 class ResourceManagementTools(
     private val coreV1Api: CoreV1Api
 ) {
-    @Tool(name = "getNamespaceResourceQuotas", description = "Get resource quotas for a namespace")
+    @Tool(name = "get_namespace_resource_quotas", description = "Get resource quotas for a namespace")
     fun getNamespaceResourceQuotas(
         @ToolParam(description = "The Kubernetes namespace to get resource quotas from") 
         namespace: String = "default"
@@ -35,7 +35,7 @@ class ResourceManagementTools(
         }
     }
 
-    @Tool(name = "describeLimitRange", description = "Get limit range details for a namespace")
+    @Tool(name = "describe_limit_range", description = "Get limit range details for a namespace")
     fun describeLimitRange(
         @ToolParam(description = "Name of the LimitRange to describe") 
         name: String,
@@ -71,7 +71,7 @@ class ResourceManagementTools(
         }
     }
 
-    @Tool(name = "getClusterResourceUsage", description = "Get overall cluster resource utilization")
+    @Tool(name = "get_cluster_resource_usage", description = "Get overall cluster resource utilization")
     fun getClusterResourceUsage(): String {
         return try {
             val nodes = coreV1Api.listNode(null, null, null, null, null, null, null, null, null, null)
@@ -115,7 +115,7 @@ class ResourceManagementTools(
         }
     }
 
-    @Tool(name = "getNamespaceResourceUsage", description = "Get resource usage for a specific namespace")
+    @Tool(name = "get_namespace_resource_usage", description = "Get resource usage for a specific namespace")
     fun getNamespaceResourceUsage(
         @ToolParam(description = "The Kubernetes namespace to get resource usage from") 
         namespace: String = "default"

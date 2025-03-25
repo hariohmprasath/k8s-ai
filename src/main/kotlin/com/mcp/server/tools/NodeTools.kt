@@ -11,7 +11,7 @@ import java.time.temporal.ChronoUnit
 class NodeTools(
     private val coreV1Api: CoreV1Api
 ) {
-    @Tool(name = "listNodes", description = "Lists all Kubernetes nodes in the cluster")
+    @Tool(name = "list_nodes", description = "Lists all Kubernetes nodes in the cluster")
     fun listNodes(): List<String> {
         return try {
             coreV1Api.listNode(null, null, null, null, null, null, null, null, null, null)
@@ -29,7 +29,7 @@ class NodeTools(
         }
     }
 
-    @Tool(name = "describeNode", description = "Get detailed information about a specific node")
+    @Tool(name = "describe_node", description = "Get detailed information about a specific node")
     fun describeNode(
         @ToolParam(description = "Name of the node to describe") 
         nodeName: String
@@ -63,7 +63,7 @@ class NodeTools(
         }
     }
 
-    @Tool(name = "getNodeMetrics", description = "Get resource usage metrics for a specific node")
+    @Tool(name = "get_node_metrics", description = "Get resource usage metrics for a specific node")
     fun getNodeMetrics(
         @ToolParam(description = "Name of the node to get metrics for") 
         nodeName: String
@@ -123,7 +123,7 @@ class NodeTools(
         }
     }
     
-    @Tool(name = "getNodeEvents", description = "Get recent events for a specific node")
+    @Tool(name = "get_node_events", description = "Get recent events for a specific node")
     fun getNodeEvents(
         @ToolParam(description = "Name of the node to get events for") 
         nodeName: String
@@ -165,7 +165,7 @@ class NodeTools(
         }
     }
     
-    @Tool(name = "drainNode", description = "Mark a node as unschedulable and evict pods for maintenance")
+    @Tool(name = "drain_node", description = "Mark a node as unschedulable and evict pods for maintenance")
     fun drainNode(
         @ToolParam(description = "Name of the node to drain") 
         nodeName: String

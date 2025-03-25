@@ -2,6 +2,7 @@ package com.mcp.server.k8s
 
 import com.mcp.server.tools.*
 import io.kubernetes.client.openapi.apis.AppsV1Api
+import io.kubernetes.client.openapi.apis.BatchV1Api
 import io.kubernetes.client.openapi.apis.CoreV1Api
 import io.kubernetes.client.openapi.apis.EventsV1Api
 import io.kubernetes.client.openapi.apis.NetworkingV1Api
@@ -49,6 +50,9 @@ class K8sConfig {
     fun eventsV1Api(client: io.kubernetes.client.openapi.ApiClient) = EventsV1Api(client)
 
     @Bean
+    fun batchV1Api(client: io.kubernetes.client.openapi.ApiClient) = BatchV1Api(client)
+
+    @Bean
     fun k8sTools(
         podTools: PodTools,
         nodeTools: NodeTools,
@@ -61,7 +65,8 @@ class K8sConfig {
         resourceManagementTools: ResourceManagementTools,
         eventTools: EventTools,
         healthTools: HealthTools,
-        helmTools: HelmTools
+        helmTools: HelmTools,
+        jobTools: JobTools
     ): ToolCallbackProvider {
         return MethodToolCallbackProvider.builder()
             .toolObjects(
@@ -74,6 +79,7 @@ class K8sConfig {
                 configMapAndSecretTools,
                 networkTools,
                 resourceManagementTools,
+                jobTools,
                 eventTools,
                 healthTools,
                 helmTools

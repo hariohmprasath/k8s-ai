@@ -11,7 +11,7 @@ class DeploymentTools(
     private val appsV1Api: AppsV1Api,
     private val coreV1Api: CoreV1Api
 ) {
-    @Tool(name = "listDeployments", description = "Lists all Kubernetes deployments in the specified namespace")
+    @Tool(name = "list_deployments", description = "Lists all Kubernetes deployments in the specified namespace")
     fun listDeployments(
         @ToolParam(description = "The Kubernetes namespace to list deployments from") 
         namespace: String = "default"
@@ -62,7 +62,7 @@ class DeploymentTools(
         }
     }
 
-    @Tool(name = "describeDeployment", description = "Get detailed information about a specific deployment")
+    @Tool(name = "describe_deployment", description = "Get detailed information about a specific deployment")
     fun describeDeployment(
         @ToolParam(description = "Name of the deployment to describe") 
         deploymentName: String,
@@ -134,7 +134,7 @@ class DeploymentTools(
         }
     }
 
-    @Tool(name = "analyzeDeployment", description = "Analyzes the health and status of a deployment")
+    @Tool(name = "analyze_deployment", description = "Analyzes the health and status of a deployment")
     fun analyzeDeploymentHealth(
         @ToolParam(description = "Name of the deployment to analyze") 
         deploymentName: String,

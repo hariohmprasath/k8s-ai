@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 class ConfigMapAndSecretTools(
     private val coreV1Api: CoreV1Api
 ) {
-    @Tool(name = "listConfigMaps", description = "Lists all ConfigMaps in the specified namespace")
+    @Tool(name = "list_config_maps", description = "Lists all ConfigMaps in the specified namespace")
     fun listConfigMaps(
         @ToolParam(description = "The Kubernetes namespace to list ConfigMaps from") 
         namespace: String = "default"
@@ -28,7 +28,7 @@ class ConfigMapAndSecretTools(
         }
     }
 
-    @Tool(name = "describeConfigMap", description = "Get detailed information about a specific ConfigMap")
+    @Tool(name = "describe_config_map", description = "Get detailed information about a specific ConfigMap")
     fun describeConfigMap(
         @ToolParam(description = "Name of the ConfigMap to describe") 
         configMapName: String,
@@ -56,7 +56,7 @@ class ConfigMapAndSecretTools(
         }
     }
 
-    @Tool(name = "listSecrets", description = "Lists all Secrets in the specified namespace (names only for security)")
+    @Tool(name = "list_secrets", description = "Lists all Secrets in the specified namespace (names only for security)")
     fun listSecrets(
         @ToolParam(description = "The Kubernetes namespace to list Secrets from") 
         namespace: String = "default"
@@ -75,7 +75,7 @@ class ConfigMapAndSecretTools(
         }
     }
 
-    @Tool(name = "describeSecret", description = "Get metadata about a specific Secret (no secret values shown)")
+    @Tool(name = "describe_secret", description = "Get metadata about a specific Secret (no secret values shown)")
     fun describeSecret(
         @ToolParam(description = "Name of the Secret to describe") 
         secretName: String,

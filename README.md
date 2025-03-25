@@ -31,6 +31,11 @@ This is a Spring Boot-based MCP server that combines the power of AI with cluste
 - 🔍 AI-powered pod diagnostics with recommendations
 - ⚡ Secure command execution in pods
 
+### 🎯 Job Management
+- 📋 List and analyze jobs in any namespace
+- 🔍 Get detailed job status and execution history
+- 🗑️ Clean up completed or failed jobs
+
 ### ⎈ Helm Integration
 - 📦 Intelligent chart management
 - 🔄 Seamless release upgrades
@@ -106,6 +111,10 @@ This AI-powered MCP server understands natural language queries about your Kuber
 ❓ Why is the 'auth-service' pod failing to start?
 📝 Show me the logs from the 'payment-processor' pod with error highlighting
 📈 What's using the most resources in the 'monitoring' namespace?
+
+🔍 Show me the status of all jobs in the 'default' namespace
+🎯 List completed jobs in the 'data-processing' namespace
+🗑️ Clean up failed jobs in the 'etl' namespace
 ```
 
 ### ⎈ Helm Release Management

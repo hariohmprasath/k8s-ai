@@ -12,7 +12,7 @@ import java.time.temporal.ChronoUnit
 class EventTools(
     private val coreV1Api: CoreV1Api
 ) {
-    @Tool(name = "getRecentEvents", description = "Get recent events from a namespace for troubleshooting with severity analysis")
+    @Tool(name = "get_recent_events", description = "Get recent events from a namespace for troubleshooting with severity analysis")
     fun getRecentEvents(
         @ToolParam(description = "The Kubernetes namespace to get events from") 
         namespace: String = "default"
@@ -121,7 +121,7 @@ class EventTools(
             """.trimIndent()
     }
 
-    @Tool(name = "getResourceEvents", description = "Get events for a specific resource")
+    @Tool(name = "get_resource_events", description = "Get events for a specific resource")
     fun getResourceEvents(
         @ToolParam(description = "Type of resource (Pod, Deployment, etc)") 
         resourceType: String,

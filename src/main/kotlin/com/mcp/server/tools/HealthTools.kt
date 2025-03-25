@@ -11,7 +11,7 @@ class HealthTools(
     private val coreV1Api: CoreV1Api,
     private val appsV1Api: AppsV1Api
 ) {
-    @Tool(name = "checkClusterHealth", description = "Check overall cluster health")
+    @Tool(name = "check_cluster_health", description = "Check overall cluster health")
     fun checkClusterHealth(): String {
         return try {
             val nodes = coreV1Api.listNode(null, null, null, null, null, null, null, null, null, null)
@@ -65,7 +65,7 @@ class HealthTools(
         }
     }
 
-    @Tool(name = "getFailedWorkloads", description = "List all failed pods/jobs in a namespace")
+    @Tool(name = "get_failed_workloads", description = "List all failed pods/jobs in a namespace")
     fun getFailedWorkloads(
         @ToolParam(description = "The Kubernetes namespace to check for failed workloads") 
         namespace: String = "default"
@@ -115,7 +115,7 @@ class HealthTools(
         }
     }
 
-    @Tool(name = "analyzeResourceBottlenecks", description = "Identify resource constraints in a namespace")
+    @Tool(name = "analyze_resource_bottlenecks", description = "Identify resource constraints in a namespace")
     fun analyzeResourceBottlenecks(
         @ToolParam(description = "The Kubernetes namespace to analyze for resource bottlenecks") 
         namespace: String = "default"

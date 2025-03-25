@@ -13,12 +13,12 @@ private val logger = KotlinLogging.logger {}
 @Service
 class HelmTools {
 
-    @Tool(name = "listReleases", description = "List all Helm releases in a namespace")
+    @Tool(name = "list_releases", description = "List all Helm releases in a namespace")
     fun listReleases(@ToolParam(description = "The Kubernetes namespace to list releases from") namespace: String): String {
         return executeHelmCommand("list", "--namespace", namespace)
     }
 
-    @Tool(name = "installChart", description = "Install a Helm chart with optional values")
+    @Tool(name = "install_chart", description = "Install a Helm chart with optional values")
     fun installChart(
         @ToolParam(description = "Name for the release") releaseName: String,
         @ToolParam(description = "Name of the chart to install") chartName: String,
@@ -36,7 +36,7 @@ class HelmTools {
         return executeHelmCommand(*command.toTypedArray())
     }
 
-    @Tool(name = "uninstallRelease", description = "Uninstall a Helm release")
+    @Tool(name = "uninstall_release", description = "Uninstall a Helm release")
     fun uninstallRelease(
         @ToolParam(description = "Name of the release to uninstall") releaseName: String,
         @ToolParam(description = "The Kubernetes namespace of the release") namespace: String
@@ -44,7 +44,7 @@ class HelmTools {
         return executeHelmCommand("uninstall", releaseName, "--namespace", namespace)
     }
 
-    @Tool(name = "upgradeRelease", description = "Upgrade an existing Helm release")
+    @Tool(name = "upgrade_release", description = "Upgrade an existing Helm release")
     fun upgradeRelease(
         @ToolParam(description = "Name of the release to upgrade") releaseName: String,
         @ToolParam(description = "Name of the chart to upgrade to") chartName: String,
@@ -62,7 +62,7 @@ class HelmTools {
         return executeHelmCommand(*command.toTypedArray())
     }
 
-    @Tool(name = "getReleaseStatus", description = "Get the status of a Helm release")
+    @Tool(name = "get_release_status", description = "Get the status of a Helm release")
     fun getReleaseStatus(
         @ToolParam(description = "Name of the release to check") releaseName: String,
         @ToolParam(description = "The Kubernetes namespace of the release") namespace: String
@@ -70,7 +70,7 @@ class HelmTools {
         return executeHelmCommand("status", releaseName, "--namespace", namespace)
     }
 
-    @Tool(name = "addRepository", description = "Add a Helm repository")
+    @Tool(name = "add_repository", description = "Add a Helm repository")
     fun addRepository(
         @ToolParam(description = "Name for the repository") name: String,
         @ToolParam(description = "URL of the repository") url: String
@@ -78,12 +78,12 @@ class HelmTools {
         return executeHelmCommand("repo", "add", name, url)
     }
 
-    @Tool(name = "updateRepositories", description = "Update all Helm repositories")
+    @Tool(name = "update_repositories", description = "Update all Helm repositories")
     fun updateRepositories(): String {
         return executeHelmCommand("repo", "update")
     }
 
-    @Tool(name = "showValues", description = "Show the values for a release")
+    @Tool(name = "show_values", description = "Show the values for a release")
     fun showValues(
         @ToolParam(description = "Name of the release") releaseName: String,
         @ToolParam(description = "The Kubernetes namespace of the release") namespace: String

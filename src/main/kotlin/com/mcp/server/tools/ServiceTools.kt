@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 class ServiceTools(
     private val coreV1Api: CoreV1Api
 ) {
-    @Tool(name = "listServices", description = "Lists all Kubernetes services in the specified namespace")
+    @Tool(name = "list_services", description = "Lists all Kubernetes services in the specified namespace")
     fun listServices(
         @ToolParam(description = "The Kubernetes namespace to list services from") 
         namespace: String = "default"
@@ -29,7 +29,7 @@ class ServiceTools(
         }
     }
 
-    @Tool(name = "describeService", description = "Get detailed information about a specific service")
+    @Tool(name = "describe_service", description = "Get detailed information about a specific service")
     fun describeService(
         @ToolParam(description = "Name of the service to describe") 
         serviceName: String,
@@ -67,7 +67,7 @@ class ServiceTools(
         }
     }
 
-    @Tool(name = "getServiceEndpoints", description = "Get endpoints (pod IPs) for a specific service")
+    @Tool(name = "get_service_endpoints", description = "Get endpoints (pod IPs) for a specific service")
     fun getServiceEndpoints(
         @ToolParam(description = "Name of the service to get endpoints for") 
         serviceName: String,

@@ -21,7 +21,7 @@ class PodTools(
     private val coreV1Api: CoreV1Api,
     private val appsV1Api: AppsV1Api
 ) {
-    @Tool(name = "listPods", description = "Lists all Kubernetes pods in the specified namespace")
+    @Tool(name = "list_pods", description = "Lists all Kubernetes pods in the specified namespace")
     fun listPods(@ToolParam(description = "The Kubernetes namespace to list pods from") namespace: String = "default"): List<String> {
         return try {
             coreV1Api.listNamespacedPod(namespace, null, null, null, null, null, null, null, null, null, null)
@@ -36,7 +36,7 @@ class PodTools(
         }
     }
 
-    @Tool(name = "getPodLogs", description = "Retrieves logs from a specific Kubernetes pod with error pattern detection")
+    @Tool(name = "get_pod_logs", description = "Retrieves logs from a specific Kubernetes pod with error pattern detection")
     fun getPodLogs(
         @ToolParam(description = "Name of the pod to get logs from") podName: String,
         @ToolParam(description = "The Kubernetes namespace where the pod is located") namespace: String = "default",
@@ -87,7 +87,7 @@ class PodTools(
         }
     }
 
-    @Tool(name = "describePod", description = "Gets detailed information about a specific Kubernetes pod")
+    @Tool(name = "describe_pod", description = "Gets detailed information about a specific Kubernetes pod")
     fun describePod(
         @ToolParam(description = "Name of the pod to describe") podName: String,
         @ToolParam(description = "The Kubernetes namespace where the pod is located") namespace: String = "default"
@@ -110,7 +110,7 @@ class PodTools(
         }
     }
 
-    @Tool(name = "diagnosePods", description = "Analyzes problematic pods and provides troubleshooting recommendations")
+    @Tool(name = "diagnose_pods", description = "Analyzes problematic pods and provides troubleshooting recommendations")
     fun analyzePodIssues(
         @ToolParam(description = "The Kubernetes namespace to analyze pods from") 
         namespace: String = "default"
@@ -288,7 +288,7 @@ class PodTools(
         }
     }
 
-    @Tool(name = "getPodMetrics", description = "Get resource usage metrics for a specific pod")
+    @Tool(name = "get_pod_metrics", description = "Get resource usage metrics for a specific pod")
     fun getPodMetrics(
         @ToolParam(description = "Name of the pod to get metrics for") 
         podName: String,
@@ -338,7 +338,7 @@ class PodTools(
         }
     }
 
-    @Tool(name = "execInPod", description = "Execute a command in a pod container")
+    @Tool(name = "exec_in_pod", description = "Execute a command in a pod container")
     fun execInPod(
         @ToolParam(description = "Name of the pod to execute command in") 
         podName: String,
