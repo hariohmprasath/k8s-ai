@@ -54,7 +54,7 @@ jobs:
         draft: false
         prerelease: false
         files: |
-          mcp-server/target/mcp-server-*-fat.jar
+          mcp-server/target/mcp-server-*.jar
           agent/target/agent-*-fat.jar
           tools/target/tools-*.jar
     
@@ -63,6 +63,6 @@ jobs:
       with:
         name: k8s-ai-artifacts
         path: |
-          mcp-server/target/mcp-server-*-fat.jar
+          mcp-server/target/mcp-server-*.jar
           agent/target/agent-*-fat.jar
           tools/target/tools-*.jar

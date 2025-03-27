@@ -9,4 +9,3 @@ open class K8sMcpServer
 fun main(args: Array<String>) {
     SpringApplication.run(K8sMcpServer::class.java, *args)
 }
-

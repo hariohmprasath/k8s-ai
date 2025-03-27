@@ -1,12 +1,14 @@
 # 🤖 Kubernetes AI Agent
 
-This module provides the Webservice layer to invoke kubernetes agent that uses MCP tools to manage your Kubernetes cluster. 
+This module provides the REST API to invoke kubernetes agent that uses MCP tools to manage your Kubernetes cluster.
+
+For useful prompts, checkout the [main README.md](../README.md)
 
 ## ✨ Overview
 
 The Agent module is a Spring Boot application that:
 - Processes natural language queries about Kubernetes
-- Integrates with Spring AI for intelligent responses
+- Integrates with OpenAI for intelligent responses
 - Provides a REST API endpoint for chat interactions
 - Formats responses in HTML for easy reading
 
@@ -25,7 +27,7 @@ The Agent module is a Spring Boot application that:
 | 🧰 Maven | 3.8 or later |
 | ⎈ Kubernetes | Configured `~/.kube/config` |
 
-## 🏗️ Building the Module
+## 🏗️ 1. Project Build
 
 ```bash
 # From the agent directory
@@ -35,7 +37,7 @@ mvn clean package
 mvn clean package -pl agent
 ```
 
-## 🚀 Running the Agent
+## 🚀 2. Running the Agent
 
 ```bash
 # Run the agent directly (includes all dependencies)
@@ -48,7 +50,7 @@ The server will start on port 8080 by default, and you can access the chat API a
 http://localhost:8080/api/v1/chat
 ```
 
-## 🔌 API Usage
+## 🤝 3. API Usage
 
 The agent exposes a simple REST API for chat interactions:
 
@@ -61,7 +63,7 @@ What pods are running in the default namespace?
 
 The response will be HTML-formatted text that can be rendered in a chat interface.
 
-## 🔧 Configuration
+## 🔧 4. Configuration
 
 The agent can be configured through `application.properties`:
 
@@ -71,6 +73,5 @@ server.port=8080
 
 # Spring AI configuration
 spring.ai.openai.api-key=${OPENAI_API_KEY}
-spring.ai.openai.chat.options.model=gpt-4
-spring.ai.openai.chat.options.temperature=0.7
+spring.ai.openai.chat.options.model=gpt-4o-mini
 ```
