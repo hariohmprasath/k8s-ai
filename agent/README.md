@@ -55,10 +55,7 @@ http://localhost:8080/api/v1/chat
 The agent exposes a simple REST API for chat interactions:
 
 ```
-POST /api/v1/chat
-Content-Type: text/plain
-
-What pods are running in the default namespace?
+curl -X POST http://localhost:8080/api/v1/chat -H "Content-Type: text/plain" -d "What pods are running in the default namespace?"
 ```
 
 The response will be HTML-formatted text that can be rendered in a chat interface.
