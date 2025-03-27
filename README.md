@@ -1,48 +1,59 @@
-<div align="center">
-
-# 🎯 Kubernetes MCP Server
+# 🎯 Kubernetes AI Management System
 
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.6-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-18.0.1-326CE5.svg)](https://kubernetes.io/)
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.9.25-7541E8.svg)](https://kotlinlang.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-14.0.0-black.svg)](https://nextjs.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-> Your AI-Powered Kubernetes Control Plane
+> AI-Powered Kubernetes Management with Modern UI
 
 ```ascii
-    ⎈ K8s MCP Server
-    ├── 🤖 AI-Powered
+    ⎈ K8s AI Management
+    ├── 🤖 AI-Powered Chatbot
     ├── 🔍 Smart Diagnostics
-    ├── 🛡️ Enhanced Security
+    ├── 🖥️ Modern UI Interface
     └── 🚀 Developer Friendly
 ```
 
-</div>
-
 ## ✨ Overview
 
-This is a Spring Boot-based MCP server that combines the power of AI with cluster management capabilities.
+This project combines the power of AI with Kubernetes management capabilities, providing an intuitive chat interface for interacting with your Kubernetes clusters. The system consists of multiple modules that work together to provide a comprehensive solution.
+
+## 🏗️ Project Structure
+
+The project is organized into the following modules:
+
+- **agent**: Spring Boot application with AI integration for processing natural language queries
+- **mcp-server**: Main Spring Boot application that serves as the Management Control Plane
+- **tools**: Kubernetes tools and utilities for cluster management
+- **ui**: Next.js frontend with shadcn components providing a modern chat interface
 
 ## 🎁 Features
 
-### 🔄 Pod Management
+### 🤖 AI-Powered Chat Interface
+
+- 💬 Natural language interaction with your Kubernetes cluster
+- 📝 Markdown rendering for readable responses
+- 📋 Chat history tracking
+- 🎨 Modern, responsive UI design
+
+### 🔄 Kubernetes Management
+
 - 📋 List and analyze pods in real-time
 - 📝 Smart log analysis with error pattern detection
-- 🔍 AI-powered pod diagnostics with recommendations
+- 🔍 AI-powered diagnostics with recommendations
 - ⚡ Secure command execution in pods
 
-### 🎯 Job Management
-- 📋 List and analyze jobs in any namespace
-- 🔍 Get detailed job status and execution history
-- 🗑️ Clean up completed or failed jobs
-
 ### ⎈ Helm Integration
+
 - 📦 Intelligent chart management
 - 🔄 Seamless release upgrades
 - 🗃️ Repository management
 - 📊 Configuration tracking
 
 ### 📈 Event Analysis
+
 - 🎯 Real-time event monitoring
 - 🚨 Smart bottleneck detection
 - 📱 Live deployment tracking
@@ -52,118 +63,60 @@ This is a Spring Boot-based MCP server that combines the power of AI with cluste
 | Requirement | Version |
 |------------|----------|
 | ☕ JDK | 17 or later |
-| 🐘 Gradle | 7.x or later |
+| 🧰 Maven | 3.8 or later |
 | ⎈ Kubernetes | Configured `~/.kube/config` |
 | 🎡 Helm | CLI installed |
+| 🟢 Node.js | 18 or later (for UI development) |
 
-> **Note:** MCP tool always uses the kubeconfig file from `~/.kube/config`, so make sure it is properly configured.
+> **Note:** The system uses the kubeconfig file from `~/.kube/config`, so make sure it is properly configured.
 
 ## 🏗️ Building the Project
 
 ```bash
-./gradlew clean build
+# Build all modules
+mvn clean package
+
+# Run the MCP server
+java -jar mcp-server/target/mcp-server-*-fat.jar
+
+# Alternatively, run the agent directly
+java -jar agent/target/agent-*-fat.jar
 ```
 
 ## 🤝 Integration with Claude Desktop
 
-1. Install Claude Desktop
-2. Configure the MCP server connection:
-```json
-   {
-    "mcpServers": {
-      "spring-ai-mcp-k8s": {
-        "command": "java",
-        "args": [
-          "-Dspring.ai.mcp.server.stdio=true",
-          "-Dspring.main.web-application-type=none",
-          "-Dlogging.pattern.console=",
-          "-jar",          
-          "<<jar-location>>"
-        ]
-      }
-    }
-  }
-```
-
-> **Note:** Make sure to pick the fat jar with all the dependencies
-
-## Integration with Other MCP Hosts
-
-The server follows the standard MCP protocol and can be integrated with any MCP host that supports Spring-based MCP servers. Configure your host to point to the server's URL.
+1. Refer to [mcp-server/README.md](mcp-server/README.md) for instructions on how to integrate with Claude Desktop
 
 ## 🗣️ Natural Language Interactions
 
 > 💡 Just ask questions naturally - no need to memorize commands!
 
-This AI-powered MCP server understands natural language queries about your Kubernetes cluster. Here are examples of questions you can ask:
+This AI-powered system understands natural language queries about your Kubernetes cluster. Here are examples of questions you can ask:
 
 ### 🏥 Cluster Health and Diagnostics
-```markdown
-📊 What's the overall health of my cluster?
-🔍 Are there any resource bottlenecks in the 'production' namespace?
-🚨 Show me problematic pods in the 'dev' namespace with recommendations
-📅 What events happened in the cluster in the last hour?
-```
+
+- "What's the status of my cluster?"
+- "Show me all pods in the default namespace"
+- "Are there any failing pods?"
+- "What's using the most resources in my cluster?"
 
 ### 📱 Application Management
-```markdown
-📋 List all pods in the 'default' namespace and their status
-❓ Why is the 'auth-service' pod failing to start?
-📝 Show me the logs from the 'payment-processor' pod with error highlighting
-📈 What's using the most resources in the 'monitoring' namespace?
 
-🔍 Show me the status of all jobs in the 'default' namespace
-🎯 List completed jobs in the 'data-processing' namespace
-🗑️ Clean up failed jobs in the 'etl' namespace
-```
+- "Deploy a new Redis instance"
+- "Scale the frontend deployment to 3 replicas"
+- "Restart the authentication service"
+- "Show me the logs for the payment service"
 
 ### ⎈ Helm Release Management
-```markdown
-📦 What Helm releases are installed in the 'staging' namespace?
-⚡ Install the 'prometheus' chart from the official repository
-⚙️ What values are configured for the 'elasticsearch' release?
-🔄 Update the 'kafka' release to version 2.0.0
-```
 
-> **Note:** I have noticed sometimes LLM will try and generate kubectl commands on the fly, since we would like to stick with the existing MCP tools you can suffix the prompt with "use existing MCP tools, dont generate kubectl commands"
+- "List all Helm releases"
+- "Upgrade the MongoDB chart to version 12.1.0"
+- "What values are configured for my Prometheus release?"
+- "Rollback the failed Elasticsearch release"
 
-## 🌟 Unique Features
 
-> What makes our MCP server special? Let's dive in!
-
-### 🔍 Advanced Diagnostics
-| Feature | Description |
-|---------|-------------|
-| 🤖 **Intelligent Pod Analysis** | Automatically detects common failure patterns and provides targeted recommendations |
-| 📊 **Resource Bottleneck Detection** | Proactively identifies resource constraints across namespaces |
-| 🎯 **Smart Event Analysis** | Categorizes events by severity and impact, helping prioritize issues |
-
-### 🛡️ Enhanced Security
-| Feature | Description |
-|---------|-------------|
-| 🔒 **Secure Command Execution** | Built-in validation and sanitization for pod exec commands |
-| 🏰 **Namespace Isolation** | Strong namespace-based access controls |
-| 📝 **Audit Logging** | Comprehensive logging of all operations with context |
-
-### ⎈ Helm Integration
-| Feature | Description |
-|---------|-------------|
-| 🎯 **Smart Chart Management** | Validates chart compatibility before installation |
-| ✅ **Value Validation** | Checks Helm values against schema before applying |
-| 📊 **Release Tracking** | Monitors release health and configuration drift |
-
-### 👩‍💻 Developer Experience
-| Feature | Description |
-|---------|-------------|
-| 🗣️ **Natural Language Interface** | No need to memorize kubectl commands |
-| 💡 **Contextual Help** | Provides relevant suggestions based on cluster state |
-| 🔍 **Rich Error Information** | Detailed error messages with troubleshooting steps |
+> Note: The system uses AI to analyze patterns in logs, events, and resource usage to provide intelligent diagnostics and recommendations.
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-<div align="center">
-Made with ❤️ by a naive k8s and MCP fan
-</div>
