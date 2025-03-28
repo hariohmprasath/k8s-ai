@@ -161,8 +161,7 @@ open class AgentService(private val chatBuilder: ChatClient.Builder, private val
             currentResponse = generateResponse(
                 userPrompt = userPrompt,
                 currentResponse = currentResponse,
-                chainOfThought = chainOfThought,
-                iterationCount = iterationCount
+                chainOfThought = chainOfThought                
             )
             
             // If this is the last iteration, return the response without evaluation
@@ -194,8 +193,7 @@ open class AgentService(private val chatBuilder: ChatClient.Builder, private val
     private fun generateResponse(
         userPrompt: String,
         currentResponse: String?,
-        chainOfThought: StringBuilder,
-        iterationCount: Int
+        chainOfThought: StringBuilder
     ): String {
         // Create the generation prompt based on whether this is the first iteration
         val generationPrompt = if (currentResponse == null) {

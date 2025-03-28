@@ -36,12 +36,12 @@ This AI-powered system understands natural language queries about your Kubernete
 
 - "What's the status of my cluster?"
 - "Show me all pods in the default namespace"
-- "Are there any failing pods?"
+- "Are there any failing pods? in default namespace"
 - "What's using the most resources in my cluster?"
-- "Give me a complete health check of my cluster"
+- "Give me a complete health check of the cluster"
 - "Are there any nodes not in Ready state?"
-- "Show me pods that have been running for more than 7 days"
-- "Identify any pods with high restart counts"
+- "Show me pods in default namespace that have been running for more than 7 days"
+- "Identify any pods running in default namespace with high restart counts"
 
 ### 🌐 Network Analysis
 
